@@ -6,6 +6,36 @@ An intelligent healthcare application that leverages machine learning to help us
 
 ---
 
+## 📑 Table of Contents
+
+- [Project Overview](#-project-overview)
+  - [Key Achievements](#key-achievements)
+- [Features](#-features)
+  - [Core Functionality](#core-functionality)
+- [Technical Stack](#️-technical-stack)
+- [Project Structure](#-project-structure)
+- [Installation & Setup](#-installation--setup)
+  - [Prerequisites](#prerequisites)
+  - [Step-by-Step Installation Guide](#step-by-step-installation-guide)
+  - [Troubleshooting](#troubleshooting)
+- [Model Details](#-model-details)
+  - [Machine Learning Pipeline](#machine-learning-pipeline)
+- [Usage Guide](#-usage-guide)
+  - [Quick Start](#quick-start)
+  - [Detailed Usage Instructions](#detailed-usage-instructions)
+- [Healthcare Integration](#-healthcare-integration)
+  - [FHIR Data Format](#fhir-data-format)
+  - [Risk Assessment Logic](#risk-assessment-logic)
+- [Key Technical Highlights](#-key-technical-highlights)
+- [Learning Outcomes](#-learning-outcomes)
+- [Team](#-team)
+- [License](#-license)
+- [Acknowledgments](#-acknowledgments)
+- [Additional Resources](#-additional-resources)
+  - [Research References](#research-references)
+
+---
+
 ## 🎯 Project Overview
 
 This application demonstrates the integration of machine learning, healthcare informatics, and user-centered design to create a practical diabetes management tool. The system uses an XGBoost regression model trained on comprehensive health metrics to predict diabetes risk scores and provide actionable insights to users and healthcare providers.
@@ -66,49 +96,147 @@ This application demonstrates the integration of machine learning, healthcare in
 
 ## 📁 Project Structure
 
+Understanding the project structure helps you navigate and work with the codebase effectively.
+
 ```
-├── app.py                              # Main application interface
-├── datapreprocessing&modeltrainning.py # ML pipeline and model training
-├── diabetes_risk_model.pkl             # Trained XGBoost model
-├── scaler.pkl                          # Feature scaler for preprocessing
-├── diabetes_data.csv                   # Training dataset (from Kaggle)
+SI542-Project-Diabetes-Management-App/
+├── app.py                              # Main application interface (GUI)
+├── datapreprocessing&modeltrainning.py # ML pipeline and model training script
+├── diabetes_risk_model.pkl             # Pre-trained XGBoost model (258 KB)
+├── scaler.pkl                          # Feature scaler for data preprocessing
+├── diabetes_data.csv                   # Training dataset (download from Kaggle)
+├── requirements.txt                    # Python package dependencies
+├── .gitignore                          # Git ignore rules
 ├── plots/                              # Model evaluation visualizations
-│   ├── feature_importance.png
-│   └── actual_vs_predicted.png
-└── README.md
+│   ├── feature_importance.png         # Feature importance analysis
+│   └── actual_vs_predicted.png        # Model performance visualization
+└── README.md                           # This file - project documentation
 ```
+
+### File Descriptions
+
+- **`app.py`**: Main application file containing the Tkinter GUI and user interface logic. This is the entry point for running the application.
+
+- **`datapreprocessing&modeltrainning.py`**: Machine learning pipeline script that handles data preprocessing, model training, and evaluation. Run this to retrain the model with new data.
+
+- **`diabetes_risk_model.pkl`**: Serialized XGBoost model file. Contains the trained machine learning model used for risk prediction.
+
+- **`scaler.pkl`**: StandardScaler object used to normalize input features before prediction. Must be used with the corresponding model.
+
+- **`diabetes_data.csv`**: Training dataset (not included in repository). Download from [Kaggle](https://bit.ly/3LoRKdt) and place in the project root.
+
+- **`requirements.txt`**: Lists all Python package dependencies with version specifications. Use `pip install -r requirements.txt` to install all dependencies.
+
+- **`plots/`**: Directory containing visualization outputs from model training, including feature importance charts and prediction accuracy plots.
 
 ---
 
 ## 🔧 Installation & Setup
 
 ### Prerequisites
-- Python 3.7+
-- Required packages (see below)
 
-### Installation Steps
+Before you begin, ensure you have the following installed:
 
-1. **Clone or download the repository**
+- **Python 3.7 or higher** - Check your version with `python3 --version`
+- **pip** - Python package installer (usually comes with Python)
+- **Git** (optional) - For cloning the repository
 
-2. **Install dependencies:**
+### Step-by-Step Installation Guide
+
+Follow these instructions carefully to set up the application on your local machine.
+
+#### Step 1: Clone or Download the Repository
+
+**Option A: Using Git (Recommended)**
+```bash
+git clone https://github.com/kevintan701/SI542-Project-Diabetes-Management-App.git
+cd SI542-Project-Diabetes-Management-App
+```
+
+**Option B: Manual Download**
+1. Click the green "Code" button on the GitHub repository page
+2. Select "Download ZIP"
+3. Extract the ZIP file to your desired location
+4. Open a terminal and navigate to the extracted folder
+
+#### Step 2: Install Python Dependencies
+
+Install all required packages using pip:
+
 ```bash
 pip install numpy pandas scikit-learn xgboost matplotlib tk joblib
 ```
 
-3. **Download the training dataset:**
-   - Download `diabetes_data.csv` from [Kaggle Dataset](https://bit.ly/3LoRKdt)
-   - Place the CSV file in the project root directory
+**Note for macOS users:** If you encounter an "externally-managed-environment" error, use:
+```bash
+pip install --break-system-packages numpy pandas scikit-learn xgboost matplotlib tk joblib
+```
 
-4. **Train the model** (if needed):
+**Alternative: Using requirements.txt**
+```bash
+pip install -r requirements.txt
+```
+
+#### Step 3: Download the Training Dataset
+
+The application requires a training dataset to function properly:
+
+1. **Download the dataset:**
+   - Visit the [Kaggle Dataset](https://bit.ly/3LoRKdt)
+   - Click "Download" to get the `diabetes_data.csv` file
+   - **Note:** You may need to create a free Kaggle account if prompted
+
+2. **Place the file:**
+   - Move `diabetes_data.csv` to the project root directory (same folder as `app.py`)
+   - Verify the file is in the correct location:
+     ```bash
+     ls diabetes_data.csv
+     ```
+
+#### Step 4: Verify Model Files (Optional)
+
+The repository includes pre-trained model files, so you typically don't need to retrain:
+
+- ✅ `diabetes_risk_model.pkl` - Pre-trained XGBoost model
+- ✅ `scaler.pkl` - Feature scaler for data preprocessing
+
+**If you want to retrain the model:**
 ```bash
 python datapreprocessing&modeltrainning.py
 ```
-   Note: Pre-trained model files (`diabetes_risk_model.pkl` and `scaler.pkl`) are included in the repository.
+This will regenerate the model files based on your dataset.
 
-5. **Launch the application:**
+#### Step 5: Launch the Application
+
+Run the main application:
+
 ```bash
 python app.py
 ```
+
+Or on some systems:
+```bash
+python3 app.py
+```
+
+The application window should open automatically. If you encounter any errors, see the Troubleshooting section below.
+
+### Troubleshooting
+
+**Problem: "ModuleNotFoundError: No module named 'numpy'"**
+- **Solution:** Install missing packages using `pip install numpy pandas scikit-learn xgboost matplotlib tk joblib`
+
+**Problem: "FileNotFoundError: diabetes_risk_model.pkl"**
+- **Solution:** Ensure you're running the script from the project root directory, or retrain the model using Step 4
+
+**Problem: "Tkinter not found" (Linux)**
+- **Solution:** Install tkinter: `sudo apt-get install python3-tk` (Ubuntu/Debian) or `sudo yum install python3-tkinter` (CentOS/RHEL)
+
+**Problem: Application window doesn't appear**
+- **Solution:** Check terminal for error messages. Ensure all dependencies are installed correctly.
+
+**Problem: "Permission denied" errors**
+- **Solution:** On macOS/Linux, you may need to use `python3` instead of `python`, or adjust file permissions
 
 ---
 
@@ -153,26 +281,133 @@ python app.py
 
 ## 💻 Usage Guide
 
-### 1. User Profile Setup
-- Enter User ID and Name
-- Input Age, Weight (kg), and Height (cm)
-- Click "Submit User Info"
+This section provides comprehensive instructions on how to use the Diabetes Management Application effectively.
 
-### 2. Daily Health Data Entry
-- Enter current Blood Glucose level
-- Select Diet quality (healthy/unhealthy)
-- Input Physical Activity duration (minutes)
-- Select Medication Adherence status
-- Choose Stress Level
-- Enter Sleep Hours
-- Select Hydration Status
-- Click "Submit Daily Data"
+### Quick Start
 
-### 3. View Risk Assessment
-- Review Risk Score and Risk Level
-- Explore detailed health metric cards
-- Read personalized recommendations
-- Share data with clinician (FHIR export)
+1. **Launch the application** (see [Installation & Setup](#-installation--setup))
+2. **Enter your profile information**
+3. **Input daily health metrics**
+4. **Review your risk assessment and recommendations**
+
+### Detailed Usage Instructions
+
+#### Step 1: User Profile Setup
+
+When you first launch the application, you'll see the user profile form:
+
+1. **Enter User ID:**
+   - Create a unique identifier (e.g., "USER001" or your initials)
+   - This helps track your health data over time
+
+2. **Enter Your Name:**
+   - Your name for personalization (e.g., "John Doe")
+
+3. **Enter Age:**
+   - Input your age in years (must be a positive number)
+   - Example: `35`
+
+4. **Enter Weight:**
+   - Input your weight in kilograms (kg)
+   - Example: `75.5` (for 75.5 kg)
+   - **Conversion:** 1 kg = 2.2 lbs
+
+5. **Enter Height:**
+   - Input your height in centimeters (cm)
+   - Example: `175` (for 175 cm or 5'9")
+   - **Conversion:** 1 cm = 0.3937 inches
+
+6. **Click "Submit User Info"**
+   - The application will validate your inputs
+   - If successful, you'll proceed to the daily health data form
+
+**Tips:**
+- Ensure all fields are filled correctly
+- Use decimal numbers for weight (e.g., 75.5, not 75)
+- The application will automatically calculate your BMI
+
+#### Step 2: Daily Health Data Entry
+
+After submitting your profile, you'll see the daily health tracking form:
+
+1. **Blood Glucose Level:**
+   - Enter your current blood glucose reading in mg/dL
+   - Normal range: 70-100 mg/dL (fasting)
+   - Acceptable range: 70-180 mg/dL (after meals)
+   - Example: `95` or `140`
+
+2. **Diet Quality:**
+   - Select from dropdown: `healthy` or `unhealthy`
+   - **Healthy:** Balanced meals with vegetables, whole grains, lean proteins
+   - **Unhealthy:** Processed foods, high sugar, excessive carbs
+
+3. **Physical Activity:**
+   - Enter minutes of exercise/physical activity per day
+   - Include walking, running, gym workouts, etc.
+   - Example: `30` (for 30 minutes)
+   - **Recommendation:** Aim for at least 30 minutes daily
+
+4. **Medication Adherence:**
+   - Select from dropdown: `good` or `poor`
+   - **Good:** Taking medications as prescribed
+   - **Poor:** Missing doses or not following prescription
+
+5. **Stress Level:**
+   - Select from dropdown: `low`, `medium`, or `high`
+   - Consider your overall stress from work, life, health concerns
+
+6. **Sleep Hours:**
+   - Enter average hours of sleep per night
+   - Example: `7.5` (for 7.5 hours)
+   - **Recommendation:** 7-9 hours for adults
+
+7. **Hydration Status:**
+   - Select from dropdown: `yes` or `no`
+   - **Yes:** Drinking adequate water throughout the day
+   - **No:** Not drinking enough water
+
+8. **Click "Submit Daily Data"**
+   - The application will process your inputs
+   - Your risk assessment will be calculated and displayed
+
+#### Step 3: View Risk Assessment
+
+After submitting your daily data, a comprehensive dashboard will appear:
+
+1. **Risk Score Display:**
+   - View your calculated risk score (0-100 scale)
+   - See color-coded risk level:
+     - 🟢 **Low Risk** (<30): Green indicator
+     - 🟡 **Moderate Risk** (30-60): Yellow indicator
+     - 🔴 **High Risk** (>60): Red indicator
+
+2. **Health Metric Cards:**
+   - Scroll through detailed cards for each health metric
+   - Each card shows:
+     - Current value/status
+     - Personalized recommendations
+     - Actionable advice
+
+3. **Personalized Recommendations:**
+   - Read context-specific advice for each metric
+   - Follow suggestions to improve your health outcomes
+
+4. **Share with Clinician:**
+   - Click "Share with Doctor 👨‍⚕️" button
+   - Your data will be exported in FHIR-compatible JSON format
+   - A `fhir_data.json` file will be created in the project directory
+   - You can share this file with your healthcare provider
+
+**Understanding Your Results:**
+- **Low Risk:** Continue maintaining healthy habits
+- **Moderate Risk:** Consider lifestyle adjustments and regular monitoring
+- **High Risk:** Consult with healthcare provider and follow recommendations
+
+**Best Practices:**
+- Enter data daily for accurate tracking
+- Be honest about your health metrics
+- Review recommendations regularly
+- Share data with your healthcare provider during checkups
 
 ---
 
