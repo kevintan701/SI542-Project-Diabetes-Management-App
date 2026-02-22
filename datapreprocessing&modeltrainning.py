@@ -34,7 +34,8 @@ Features:
 - Artifact Management:
   * Model persistence (diabetes_risk_model.pkl)
   * Scaler persistence (scaler.pkl)
-  * Feature importance plot (feature_importance.png)
+  * Actual vs predicted plot (plots/actual_vs_predicted.png)
+  * Feature importance plot (plots/feature_importance.png)
 
 Dependencies:
 - pandas: Data manipulation
@@ -51,7 +52,8 @@ Input:
 Output:
 - diabetes_risk_model.pkl: Trained XGBoost model
 - scaler.pkl: Fitted StandardScaler
-- feature_importance.png: Feature importance visualization
+- plots/actual_vs_predicted.png: Actual vs predicted risk scores scatter plot
+- plots/feature_importance.png: Feature importance visualization
 - Logging information: Training metrics and error tracking
 
 Usage:
@@ -61,12 +63,13 @@ Authors: Kevin Tan, Haichao Min, Hanfu Hou, Shreyas Karnad, You Wu, Donald Su
 Date: 2024
 """
 
+import os
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+from sklearn.metrics import root_mean_squared_error, r2_score, mean_absolute_error
 import matplotlib.pyplot as plt
 import joblib
 import logging
@@ -186,7 +189,8 @@ def train_and_evaluate_model(X, y):
         
         # Evaluate model
         y_pred = model.predict(X_test)
-        rmse = mean_squared_error(y_test, y_pred, squared=False)
+        # RMSE: use root_mean_squared_error (squared=False was removed in sklearn 1.4+)
+        rmse = root_mean_squared_error(y_test, y_pred)
         mae = mean_absolute_error(y_test, y_pred)
         r2 = r2_score(y_test, y_pred)
         
@@ -199,7 +203,8 @@ def train_and_evaluate_model(X, y):
         logging.info(f"R2 Score: {r2:.2f}")
         logging.info(f"Cross-validation scores: {cv_scores.mean():.2f} (+/- {cv_scores.std() * 2:.2f})")
         
-        return model, scaler
+        # Return model, scaler, test labels/predictions, and feature names for plotting
+        return model, scaler, y_test, y_pred, feature_names
     except Exception as e:
         logging.error(f"Error in model training: {e}")
         raise
@@ -219,17 +224,35 @@ def main():
         X, y = preprocess_data(data)
         
         # Train and evaluate model
-        model, scaler = train_and_evaluate_model(X, y)
+        model, scaler, y_test, y_pred, feature_names = train_and_evaluate_model(X, y)
         
         # Save model and scaler
         save_artifacts(model, scaler)
         
-        # Plot feature importance
+        # Ensure plots folder exists for all visualizations
+        os.makedirs('plots', exist_ok=True)
+        
+        # Actual vs predicted risk scores scatter plot (model performance visualization)
+        plt.figure(figsize=(8, 6))
+        plt.scatter(y_test, y_pred, alpha=0.5, edgecolors='k', linewidth=0.5)
+        min_val = min(y_test.min(), y_pred.min())
+        max_val = max(y_test.max(), y_pred.max())
+        plt.plot([min_val, max_val], [min_val, max_val], 'r--', lw=2, label='Perfect prediction')
+        plt.xlabel('Actual Risk Score')
+        plt.ylabel('Predicted Risk Score')
+        plt.title('Actual vs Predicted Risk Scores')
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig('plots/actual_vs_predicted.png')
+        plt.close()
+        
+        # Feature importance plot with readable names (f0, f1, ... -> actual column names)
+        model.get_booster().feature_names = feature_names
         plt.figure(figsize=(10, 6))
-        xgb.plot_importance(model, max_num_features=10)
+        xgb.plot_importance(model.get_booster(), max_num_features=10)
         plt.title('Feature Importance')
         plt.tight_layout()
-        plt.savefig('feature_importance.png')
+        plt.savefig('plots/feature_importance.png')
         plt.close()
         
     except Exception as e:

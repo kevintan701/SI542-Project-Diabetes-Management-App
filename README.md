@@ -108,8 +108,8 @@ SI542-Project-Diabetes-Management-App/
 ├── requirements.txt                    # Python package dependencies
 ├── .gitignore                          # Git ignore rules
 ├── plots/                              # Model evaluation visualizations
-│   ├── feature_importance.png         # Feature importance analysis
-│   └── actual_vs_predicted.png        # Model performance visualization
+│   ├── actual_vs_predicted.png        # Validates prediction accuracy (actual vs predicted)
+│   └── feature_importance.png         # Interprets which features drive risk scores
 └── README.md                           # This file - project documentation
 ```
 
@@ -127,7 +127,9 @@ SI542-Project-Diabetes-Management-App/
 
 - **`requirements.txt`**: Lists all Python package dependencies with version specifications. Use `pip install -r requirements.txt` to install all dependencies.
 
-- **`plots/`**: Directory containing visualization outputs from model training, including feature importance charts and prediction accuracy plots.
+- **`plots/`**: Directory containing visualization outputs from model training. We need these two plots for model evaluation and interpretability:
+  - **`actual_vs_predicted.png`**: Compares actual risk scores (test set) to the model’s predictions. Points near the diagonal line mean accurate predictions; spread around the line shows error. This plot helps us validate that the model performs well and communicate prediction reliability to users and stakeholders.
+  - **`feature_importance.png`**: Shows which input features (e.g., blood glucose, BMI, sleep) the model uses most when computing risk scores. It supports model interpretability, checks that clinically relevant factors are weighted sensibly, and can guide which metrics to prioritize in the app or in data collection.
 
 ---
 
@@ -275,7 +277,8 @@ The application window should open automatically. If you encounter any errors, s
 **Model Artifacts**:
 - `diabetes_risk_model.pkl`: Trained model
 - `scaler.pkl`: Feature scaler
-- `feature_importance.png`: Feature importance visualization
+- `plots/actual_vs_predicted.png`: Actual vs predicted risk scores (validates prediction accuracy)
+- `plots/feature_importance.png`: Feature importance (interprets which inputs drive risk scores)
 
 ---
 
